@@ -60,17 +60,4 @@ lemma "rev (rev xs) = xs"
   apply (induction xs)
   by (auto simp add: l3)
 
-value "length [1,2,3::nat,4]"
-
-fun len :: "'a list \<Rightarrow> nat" where
-"len [] = 0" |
-"len (x # xs) = 1 + (len xs)"
-
-value "len [1,2,3::nat,4]"
-
-fun map :: "('a \<Rightarrow> 'b) \<Rightarrow> 'a list \<Rightarrow> 'b list" where
-
-"map" |
-"map"
-
 end
