@@ -68,9 +68,11 @@ fun len :: "'a list \<Rightarrow> nat" where
 
 value "len [1,2,3::nat,4]"
 
-fun map :: "('a \<Rightarrow> 'b) \<Rightarrow> 'a list \<Rightarrow> 'b list" where
+fun mapp :: "('a \<Rightarrow> 'b) \<Rightarrow> 'a list \<Rightarrow> 'b list" where
 
-"map" |
-"map"
+"mapp f [] = []" |
+"mapp f (x#xs) = f x # mapp f xs"
+
+value "mapp (\<lambda>x. x + 1) [1,2,3::nat]"
 
 end
