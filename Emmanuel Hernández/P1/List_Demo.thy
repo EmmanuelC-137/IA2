@@ -81,7 +81,7 @@ lemma "length (xs @ ys) = length xs + length ys"
   by (auto)
 
 lemma "map f (xs @ ys) = map f xs @ map f ys"
-  apply (induction xs)
-  by (auto)
+  (* apply (induction xs)
+  by (auto) *)
 
 end
