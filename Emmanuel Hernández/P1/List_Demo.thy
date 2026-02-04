@@ -28,7 +28,7 @@ lemma "app (app xs ys) zs = app xs (app ys zs)"
 lemma "rev (rev xs) = xs"
   apply (induction xs) *)
 
-(* cometario *)
+
 
 term "Nil"
 
