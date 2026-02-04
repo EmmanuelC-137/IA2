@@ -77,11 +77,11 @@ value "mapp (\<lambda>x. x * x) [1,2,3::nat]"
 
 (* Intentar hacer la demotracion de eto de abajo *)
 lemma "length (xs @ ys) = length xs + length ys"
-  (* apply (induction xs)
-  by (auto) *)
+  apply (induction xs)
+  by (auto)
 
 lemma "map f (xs @ ys) = map f xs @ map f ys"
-  (* apply (induction xs)
-  by (auto) *)
+  apply (induction xs)
+  by (auto)
 
 end
