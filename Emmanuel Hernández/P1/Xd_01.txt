@@ -1,0 +1,140 @@
+---------------------------------------------------------------------------------------------------------
+20/01/2026
+---------------------------------------------------------------------------------------------------------
+Concepto HOL: Isabelle/HOL -> pagina alemana: turn
+
+LCF (Logic for computable functions)
+	Articulo de Robert Will: Sistema de lenguaje ML:
+
+	ML: Probador de teoremas, es un sistema axiomático, en la lógica de 10 axiomas aproximadamente.
+	Asegura sistema de tipado.
+
+	Axioma: Un ejemplo de axioma es por ejemplo el teorema de reflexión menciona que x = x
+		Los axiomas son reglas o verdades que no hay regla donde no se cumpla.
+		
+Enfoques:
+	Sustituir las pruebas unitarias.
+
+	Pruebas unitarias: Al programar un algoritmo, se usan pruebas unitarias con diferentes valores para
+			Comparar las salidas, por ejemplo pasar 1000 números, y ver la salida.
+	
+	Alternativa de PU son los teoremas.
+	Las PU no garantizan la ausencia de errores. Solo detectan la presencia de errores.
+	Presencia y ausencia de errores son dos términos diferentes.
+	
+	Sin embargo la comprobación matemática podemos definir la ausencia de errores en un código.
+
+
+---------------------------------------------------------------------------------------------------------
+21/01/2026
+---------------------------------------------------------------------------------------------------------
+
+Notación
+Implicación de asociaciones a la derecha
+
+A => B => C por tanto A => (B => C)
+
+
+Similar para otras flechas =>, ->
+
+(A1 … An)/B por tanto A1 =>
+
+HOL
+
+Lenguaje de programación funcional y un lenguaje lógico en el mismo sistema, de forma en la que se puede razonar acerca de como se programa.
+
+* datatypes
+* funciones recurcivas
+* operadores lógicos
+
+HOL es un lenguaje de programación de alto orden donde las funciones tiene valore
+
+Sistemas de tipado.
+HOL cuenta con sistema de tipado y para denotar se usan letras del alfabeto.
+
+
+Tipado de función suma:
+nat => nat => nat
+
+Tipado de un par ordenado:
+|R x |R
+
+
+
+Isabelle es construido en un calculo lamda
+
+Calculo LAMDA: Primer lenguaje inventado, en 1936, antes de las computadoras
+
+Dos constructores
+	Aplicación de funciones: Pasa dos parámetros y arroja uno, por ejemplo: Sin (Pi), Plus xy
+	Abstracción de funciones: 
+
+Aplicación de funciones asocia la izquierda
+
+Calculo LAMDA único calculo es Reducción Beta.
+
+
+Inferencia de tipo: 
+Robin milner en 1979
+
+---------------------------------------------------------------------------------------------------------
+23/01/2026
+---------------------------------------------------------------------------------------------------------
+
+infix: Estatus infijo o también operadores binarios (+,-,*,/,#,@,...)
+Mixfix: if _ then _ else _ , case _ of (Por ser ternarios entran en la categoria)
+
+Los prefijos tiene mayor valor que los infijos
+Siempre procurar escribirlos entre paréntesis los mixfix para evitar errores.
+
+syntax: theria MyTh
+	imports T1 ... Tn
+	begin (definiciones)
+	end
+
+Usualmente la importacion de la teoria es "imports Main", no obstante, para problemas mas complejos, se usan otros.
+
+
+El editor de isabelle, esta basado en jEdit.
+Isabelle da una retroalimentacion en tiempo real.
+
+Overview_Demo.thy (Consultar archivo)
+
+Una formula es de tipo bool
+
+
+suc == sucesor. (suc 0 = 1)
+Funciones predefinidas de para numeros naturales: +, *, ... :: nat => nat => nat
+
+
+---------------------------------------------------------------------------------------------------------
+04/02/2026
+---------------------------------------------------------------------------------------------------------
+
+Los lemas se escriben con una induccion de izquierada a derecha.
+
+La estructura de un lemma es la siguiente:
+lemma name: "..."
+apply (...) -> diferentes metodos de prueba
+apply (...)
+.
+.
+.
+done -> Cuando se prueba, se usa la palabra "done" y al finalizar, 
+		este se convierte en una teoria.
+
+al demostrar un lemma, se le atribuye la palabra "simp"
+lemma name [simp]: ...
+
+En algunos casos necesitamos un lema para probar otro lema.
+Para esto ultimo se utiliza un comando llamado, "sorry". Esto asume que es verdadero
+en cualquier lemma.
+
+No usar el sorry a no ser que sea necesario.
+
+
+Se pueden tener multiples suposiciones [\ A1; ... ; An \] => B
+esto es una abreviatura de A1 => ... => An => B
+
+type_sinonym string = char list
+type_sinonym ('a, 'b)foo = 'a list X 'b list
