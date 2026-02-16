@@ -1,0 +1,24 @@
+theory Simp_Demo
+    imports Main
+begin
+
+section \<open>Como simplificar\<close>
+
+text \<open>Sin suposiciones\<close>
+
+lwmma "ys @ [] = []"
+apply (simp)
+oops (*no se puede probar*)
+
+text \<open>Simplificacion en suposiciones\<close>
+
+lemma "[xs @ zs = ys @ xs]; []@xs = []@[]] \<Longrightarrow> ys = zs"
+    apply (simp)
+    done
+
+thm algebra_simps
+
+text \<open>Usando reglas adicionales\<close>
+lemma "(a+b) * (a-b) = a*a - b*(b::int)"
+    apply (simp s)
+end

@@ -68,4 +68,21 @@ universal en la formula.  *)
   True 
 *)
 
+(* reglas de re-escritura condicionales
+
+[[P1; ...; Pn]] ==> l = r 
+
+ejemplo
+p(0) = True
+p(x)=> f(x) = g(x)
+
+podemos simplificar f(0) a g(0) pero no se puede simplificar 
+f(1) porque p(1) no es probable.
+
+auto vs simp
+la diferencia es que auto actua sobre todas la partes de los termino, mientras que
+simp actua sobre el termino completo, por lo tanto auto es mas poderoso pero tambien mas lento que simp *)
+
+(* el P(if A then s else t) se puede reescribir como (A ==> P s) & (~A ==> P t) *)
+
 end
