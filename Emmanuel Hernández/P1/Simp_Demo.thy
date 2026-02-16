@@ -12,7 +12,7 @@ lemma "ys @ [] = []"
 
 text \<open>Simplificacion en suposiciones\<close>
 
-lemma "[[xs @ zs = ys @ xs]; []@xs = []@[]]] \<Longrightarrow> ys = zs"
+lemma "[|xs @ zs = ys @ xs]; []@xs = []@[]|] \<Longrightarrow> ys = zs"
     apply (simp)
     done
 
@@ -53,7 +53,7 @@ subsection \<open>Aritmetics\<close>
 
 text \<open>Aritmetica lineal\<close>
 
-lemma "[[ (x::nat) <= y+z; z+x < y ]] => x < y"
+lemma "[| (x::nat) <= y+z; z+x < y |] => x < y"
   apply (simp add: algebra_simps)
   done
 
