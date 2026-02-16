@@ -12,7 +12,7 @@ lemma "ys @ [] = []"
 
 text \<open>Simplificacion en suposiciones\<close>
 
-lemma "[xs @ zs = ys @ xs]; []@xs = []@[]] \<Longrightarrow> ys = zs"
+lemma "[[xs @ zs = ys @ xs]; []@xs = []@[]]] \<Longrightarrow> ys = zs"
     apply (simp)
     done
 
