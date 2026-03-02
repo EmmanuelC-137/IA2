@@ -49,4 +49,8 @@ translations
 lemma "<a:=1, b:=2> = (<> (a:=1)) (b:=2::int)"
   by (rule refl)
 
+value "aval (Plus (V ''x'') (N 5)) < ''x'' := 7>"
+
+value "aval (Plus (V ''x'') (N 5)) < ''y'' := 7>"
+
 end
