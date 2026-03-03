@@ -80,8 +80,7 @@ fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
 
 lemma aval_plus[simp]:
   "aval (plus e1 e2) s = aval e1 s + aval e2 s"
-  apply (induction e)
-  by auto
+
 
 
 (* Toda propiedad recursiva se prueba por induccion*)
