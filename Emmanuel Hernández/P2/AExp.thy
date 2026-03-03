@@ -77,6 +77,10 @@ fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
 "plus x (N 0) = x" |
 "plus x1 x2 = plus x1 x2"
 
+lemma aval_plus[simp]:
+  "aval (plus e1 e2) = aval e1 s + aval e2 s"
+
+
 
 (* Toda propiedad recursiva se prueba por induccion*)
 
