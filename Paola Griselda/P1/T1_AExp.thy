@@ -49,4 +49,33 @@ lemma "<a:=1, b:=2> = (<> (a:=1)) (b:=2::int)"
 
 text \<open>esta, se obtiene un 5 poque no coinciden los strings \<close>
 value "aval (Plus (V ''x'') (N 5)) 
+
+text \<open>Martes 03 de Marzo\<close>
+
+fun asimp_const :: "aexp \<Rightarrow> aexp" where
+"asimp_const (N n) = N n" |
+"asimp_const (V x) = V x" |
+"asimp_const (Plus e1 e2) = 
+  (case (asimp_const e1, asimp_const e2) of
+  (N x, N y) \<Rightarrow> N (x + y) |
+  (e1, e2) \<Rightarrow> Plus e1 e2)"
+
+value "asimp_const (Plus (V ''x'') (Plus (N 5) (N 6)"
+
+theorem aval_asimp_const:
+  "aval (asimp_const e) s = aval e s"
+  apply (induction e)
+  apply (simp_all split: aexp.split)
+  by auto
+ 
+text \<open>Ahora eliminamos todas las aplicaciones de 0 en sumas (x+0)\<close>
+
+fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
+"plus (N 0) x  = x " |
+"plus (V x) = V "
+"plus (Plus x y) =  "
+
+lemma aval_plus[simp]
+
+ 
 end
