@@ -1,0 +1,98 @@
+theory T1_AExp
+  imports Main
+begin
+
+subsection \<open>Expresiones Aritmeticas\<close>
+
+type_synonym vname = string
+type_synonym val = int
+type_synonym state = "vname \<Rightarrow> val"
+
+(*Los strings en Isabelle se denotan por dos comillas simples*)
+value " ''hola mundo'' "
+(*Definición de la esructura de datos con la que vamos a representar las estructuras numericas*)
+(*Sintacticamente los enteros son diferentes de las cadenas y de las expresiones*)
+datatype aexp = N int | V vname | Plus aexp aexp
+
+thm aexp.distinct
+thm aexp.induct
+
+(*Recibe un estado, función *)
+fun aval :: "aexp \<Rightarrow> state \<Rightarrow> val" where
+"aval (N n) s = n" |
+"aval (V x) s = s x" |
+"aval (Plus a b) s = aval a s + aval b s "
+
+value "aval (Plus(V ''x'') (N 5))
+            (\<lambda>x. if x = ''x'' then 10 else 0)"
+
+text \<open>El mismo estado pero usandno notación mas corta\<close>
+
+value "aval (Plus(V ''x'') (N 5)) ((\<lambda>x. 0) (''x'' := 7))"
+
+value "aval (Plus (V ''x'') (V ''y'')) (((\<lambda>x. 0)(''x'' := 7))(''y'' := 10))"
+
+
+text \<open>De forma mas compacta\<close>
+
+definition null_state ("<>") where
+"null_state \<equiv> \<lambda>x. 0"
+syntax
+  "_State" :: "updbinds \<Rightarrow> 'a" ("<_>")
+translations
+  "_State ms" == "_Update <> ms"
+  "_State (_updbinds b bs)" <=  "_Update (_State b) bs"
+
+thm refl (*axioma t es igual a t para todo t*)
+
+(*en la repersentación interna del lado derecho al lado izq sintacticamente son iguales*)
+lemma "<a:=1, b:=2> = (<> (a:=1)) (b:=2::int)"
+  by (rule refl)
+
+text \<open>esta, se obtiene un 5 poque no coinciden los strings \<close>
+value "aval (Plus (V ''x'') (N 5)) <''x'' := 7>"
+value "aval (Plus (V ''x'') (N 5)) < ''y'' := 7>"
+
+text \<open>Martes 03 de Marzo\<close>
+
+fun asimp_const :: "aexp \<Rightarrow> aexp" where
+"asimp_const (N n) = N n" |
+"asimp_const (V x) = V x" |
+"asimp_const (Plus e1 e2) = 
+  (case (asimp_const e1, asimp_const e2) of
+  (N x, N y) \<Rightarrow> N (x + y) |
+  (e1, e2) \<Rightarrow> Plus e1 e2)"
+
+value "asimp_const (Plus (V ''x'') (Plus (N 5) (N 6)))"
+
+theorem aval_asimp_const:
+  "aval (asimp_const e) s = aval e s"
+  apply (induction e)
+  apply (simp_all split: aexp.split)
+  by auto
+ 
+text \<open>Ahora eliminamos todas las aplicaciones de 0 en sumas (x+0) --> x \<close>
+
+fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
+"plus (N 0) x  = x " |
+"plus (V x) = V "
+"plus (Plus x y) =  "
+
+text \<open>1. Definición optimizada de la función plus\<close>
+fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
+  "plus (N x) (N y) = N (x + y)" |  \<comment> \<open>Optimización 1: Suma de dos constantes\<close>
+  "plus (N 0) e = e" |              \<comment> \<open>Optimización 2: 0 + e = e\<close>
+  "plus e (N 0) = e" |              \<comment> \<open>Optimización 3: e + 0 = e\<close>
+  "plus e1 e2 = Plus e1 e2"         \<comment> \<open>Caso general: construye el nodo del árbol\<close>
+
+text \<open>2. Demostración de que la semántica se preserva\<close>
+lemma aval_plus[simp]:
+  "aval (plus e1 e2) s = aval e1 s + aval e2 s"
+  apply (induction e1 e2 rule: plus.induct)
+  apply (auto)
+  done
+lemma aval_plus[simp]:
+  "aval (plus e1 e2) s = aval e1 s + aval e2 s"
+
+ 
+end
