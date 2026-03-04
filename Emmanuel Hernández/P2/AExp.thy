@@ -70,20 +70,34 @@ theorem aval_asimp_const:
   by auto
 
 
+(* Toda propiedad recursiva se prueba por induccion*)
+
+
 text \<open>Ahora eliminamos todas las apariciones de 0 en sumas (x + 0) --> x\<close>
 
 fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
-"plus (N i1) (N i2) = N (i1 + i2)" |
-"plus (N i) e = (if i = 0 then e else Plus (N i) e)" |
-"plus e (N i) = (if i = 0 then e else Plus e (N i))" |
+"plus (N n1) (N n2) = N (n1 + n2)" |
+"plus (N n) e = (if n = 0 then e else Plus (N n) e)" |
+"plus e (N n) = (if n = 0 then e else Plus e (N n))" |
 "plus e1 e2 = Plus e1 e2"
 
 lemma aval_plus[simp]:
   "aval (plus e1 e2) s = aval e1 s + aval e2 s"
-  apply (induction e)
+  apply (induction e1 e2 rule: plus.induct)
   by auto
 
+fun asimp :: "aexp \<Rightarrow> aexp" where
+"asimp (N n) = N n" |
+"asimp (V x) = V x" |
+"asimp (Plus e1 e2) = plus (asimp e1) (asimp e2)"
 
-(* Toda propiedad recursiva se prueba por induccion*)
+value "asimp (Plus (Plus (N 0) (N 0)) 
+                   (Plus (V ''x'') (N 0)))"
+
+theorem aval_simp[simp]:
+  "aval (asimp a) s = aval a s"
+  apply (induction a) (*Induccion Estructural*)
+  by auto
+
 
 end
