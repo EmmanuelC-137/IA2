@@ -1,4 +1,4 @@
-theory T1_AExp
+theory T1_AExp2
   imports Main
 begin
 
@@ -85,30 +85,24 @@ fun plus :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
 (*Demostración de que la semántica*)
 lemma aval_plus[simp]:
   "aval (plus e1 e2) s = aval e1 s + aval e2 s"
-  apply (induction e1 e2 rule: plus.induct)
+  apply (induction e1 e2 rule: plus.induct) (*esquema de inducción computacional*)
   apply (auto)
   done
-(*función que toma dos exp aritméticas y las suma,
- pero intentando simplificar el resultado si hay constantes o 0*)
-fun plus_case :: "aexp \<Rightarrow> aexp \<Rightarrow> aexp" where
-  "plus_case e1 e2 = 
-    (case (e1, e2) of 
-      (N x, N y) \<Rightarrow> N (x + y) |
-      (N i, e) \<Rightarrow> (if i = 0 then e else Plus (N i) e) |
-      (e, N i) \<Rightarrow> (if i = 0 then e else Plus e (N i)) |
-      (x, y) \<Rightarrow> Plus x y)"
 
-lemma aval_plus_case[simp]:
-  "aval (plus_case e1 e2) s = aval e1 s + aval e2 s"
-  apply (cases "(e1, e2)") (*Le decimos que divida la prueba evaluando el par*)
-  apply (auto split: aexp.split) (*split ayuda a resolver los subcasos del case*)
-  done
+(*4 de marzo*)
+(*Utiliza la función Plus para simplificarla*)
+fun asimp :: "aexp \<Rightarrow> aexp" where 
+"asimp (N n) = N n" |(*se introducen a la misma fun asimp y simplifica *)
+"asimp (V x) = V x" |
+"asimp (plus e1 e2 =  plus (asimp e1) asimp e2)"
 
-text \<open>Pruebas de la función plus\<close>
-value "plus (N 5) (N 3)" (*Suma de dos constantes 5+3 debería sumarlos directamente*)
-value "plus (V ''x'') (N 0)" (*Suma con 0 derecha x+0  ignora el 0 y devuelve solo la variable*)
-value "plus (N 0) (V ''y'')" (*Suma con 0  izq 0+y ignora el 0 *)
-value "plus (V ''x'') (N 5)" (*Caso general x+5, son dos constantes ni hay un 0 *)
+tehorem aval_asimp[simp]:
+"aval (asimp a) s = aval a s"
+  by (induction a) auto (*Inducción estrutural*)
+
+(*si utilizamos def mas modulasre por ejemplo asimp esta defiinido en el plus, si
+hacemos moludar las demostraciones utilizadno def iteredia*) 
+(*Hasta aqui tenemos exp aritmeticas*)
 
 
 end
