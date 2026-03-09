@@ -56,5 +56,9 @@ fun bsimp :: "bexp \<Rightarrow> bexp" where
 "bsimp (Less a1 a2) = less (asimp a1) (asimp a2)"
 
 value "bsimp (And (Less (N 0) (N 1)) b)"
+value "bsimp (And (Less (N 1) (N 0)) (Bc True))"
+
+lemma bval[simp]: "bval (bsimp b) s = bval b s"
+  by (induction b, auto)
 
 end
