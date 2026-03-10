@@ -4,6 +4,8 @@ subsubsection \<open>Expresiones booleanas\<close>
 
 datatype bexp = Bc bool | Not bexp | And bexp bexp | Less aexp aexp
 
+(* IMP es un lenguaje que e esta modelando y es de tipo imperativo, esto porque esta basado en la mutabilidad*)
+
 thm bexp.distinct
 thm bexp.induct
 
