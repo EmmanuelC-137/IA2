@@ -32,6 +32,6 @@ fun comp :: "aexp \<Rightarrow> instr list" where
 
 value "comp (Plus (Plus (V ''x'') (N 1)) (V ''z''))"
 
-theorem exec_comp: "exec (comp a) s [] = ?"
+theorem exec_comp: "exec (comp a) s [] = [aval a s]"
 
 end
