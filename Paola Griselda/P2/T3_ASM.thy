@@ -41,13 +41,25 @@ fun comp :: "aexp \<Rightarrow> instr list" where
 
 value "comp (Plus (Plus (V ''x'') (N 1)) (V ''z''))"
 
+(*Ejecuta una lista concatenada a otra*)
+lemma exec_append[simp]: "exec (is1 @ is2) s stk = exec is2 s (exec is1 s stk)"
+  by (induction is1 arbitrary: is2 s stk, auto)
+
+
 theorem exec_comp: "exec (comp a) s [] = [aval a s]"
   quickcheck, nitpick
+
+(*Ejecuta una lista concatenada a otra*)
+lemma exec_append[simp]:
+  "exec (is1 @ is2) s stk = exec is2 s (exec is1 s stk)"
+  apply (induction is1 arbitrary: stk)
+  apply (auto)
+  done
 (*
 demostrar
 en el libro marca como probrarlo
 *)
-(*Ejecuta una lista pegada a otra*)
+(*Ejecuta una lista concatenada a otra*)
 lemma exec_append[simp]:
   "exec (is1 @ is2) s stk = exec is2 s (exec is1 s stk)"
   apply (induction is1 arbitrary: stk)
@@ -58,5 +70,9 @@ lemma comp: "exec (comp a) s stk = aval a s # stk"
   apply (induction a arbitrary: stk) (*Si no se pone arbitary isabelle asume que la pila stk es fija e inmutable durante toda la prueba, debe funcionar para cualquier pila en cualquier momento*)
   apply (auto)
   done
+
+
+
+
 
 

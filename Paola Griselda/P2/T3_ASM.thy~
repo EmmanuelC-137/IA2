@@ -37,12 +37,26 @@ subsection \<open>Compilación\<close>
 fun comp :: "aexp \<Rightarrow> instr list" where
 "comp (N n) = [LOADI n]" |
 "comp (V x) = [LOAD x]" |
-"comp (Plus e1 e2) = comp e1 @ comp e2 @ [ADD]"
+"comp (Plus e1 e2) = comp e1 @ comp e2 @ [ADD]" 
 
 value "comp (Plus (Plus (V ''x'') (N 1)) (V ''z''))"
 
 theorem exec_comp: "exec (comp a) s [] = [aval a s]"
   quickcheck, nitpick
-
+(*
 demostrar
 en el libro marca como probrarlo
+*)
+(*Ejecuta una lista pegada a otra*)
+lemma exec_append[simp]:
+  "exec (is1 @ is2) s stk = exec is2 s (exec is1 s stk)"
+  apply (induction is1 arbitrary: stk)
+  apply (auto)
+  done
+
+lemma comp: "exec (comp a) s stk = aval a s # stk"
+  apply (induction a arbitrary: stk) (*Si no se pone arbitary isabelle asume que la pila stk es fija e inmutable durante toda la prueba, debe funcionar para cualquier pila en cualquier momento*)
+  apply (auto)
+  done
+
+
