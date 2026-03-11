@@ -32,6 +32,14 @@ fun comp :: "aexp \<Rightarrow> instr list" where
 
 value "comp (Plus (Plus (V ''x'') (N 1)) (V ''z''))"
 
+lemma exec_append[simp]: "exec (is1 @ is2) s stk = exec is2 s (exec is1 s stk)"
+  by (induction is1 arbitrary: is2 s stk, auto)
+
+lemma exec_comp_g: "exec (comp a) s stk = aval a s # stk"
+  by (induction a arbitrary: s stk, auto)
+
 theorem exec_comp: "exec (comp a) s [] = [aval a s]"
+  by (simp add: exec_comp_g)
+
 
 end
