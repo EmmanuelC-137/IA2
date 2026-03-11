@@ -42,4 +42,6 @@ theorem exec_comp: "exec (comp a) s [] = [aval a s]"
   by (simp add: exec_comp_g)
 
 
+(* term "P \<and> (\<forall> x. Q x)" *)
+
 end
