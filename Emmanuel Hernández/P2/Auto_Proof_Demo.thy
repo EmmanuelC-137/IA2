@@ -1,0 +1,26 @@
+theory Auto_Proof_Demo
+imports Main
+begin
+
+section \<open>Lógica y Conjuntos\<close>
+
+(* para toda "x" existe "y" *)
+lemma "\<forall> x. \<exists> y. x = y"
+  by auto
+
+lemma "A \<subseteq> B \<inter> C \<Longrightarrow> A \<subseteq> B \<union> C"
+  by auto
+
+lemma "\<lbrakk> \<forall>xs \<in> A. \<exists>ys. xs = ys @ ys; us \<in> A \<rbrakk> \<Longrightarrow> \<exists>n. length us = n + n"
+  by fastforce
+
+text \<open> Pruebas simples in FOL y teoría de conjuntos son automáticas
+Ejemplo: si T es total, A es antisimetrica y T es subconjunto de A,
+entonces A es subconjunto de T\<close>
+
+lemma AT:
+"\<lbrakk>\<forall>x y. T x y \<or> T y x;
+\<lbrakk>\<forall>x y. T x y \<and> A y x --> x = y;
+\<lbrakk>\<forall>x y. T x y --> A x y |] ==> \<forall>x y. A x y --> T x y"
+  by auto
+end
