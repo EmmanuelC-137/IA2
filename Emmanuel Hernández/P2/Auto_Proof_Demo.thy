@@ -23,4 +23,36 @@ lemma AT:
 \<forall>x y. A x y \<and> A y x \<longrightarrow> x = y;
 \<forall>x y. T x y \<longrightarrow> A x y \<rbrakk> \<Longrightarrow> \<forall>x y. A x y \<longrightarrow> T x y"
   by blast
+
+lemma "R\<^sup>* \<subseteq> (R \<union> S)\<^sup>*"
+  using rtrancl_Un_subset by auto
+
+
+text \<open>Encuentra P e intenta sledgehammer\<close>
+
+lemma "a#xs = ys @[a] \<Longrightarrow> set xs = set ys"
+  sledgehammer
+
+
+text \<open>Aritmética\<close>
+
+lemma"\<lbrakk> (a::int) \<le> f x + b; 2 * f x < c \<rbrakk> \<Longrightarrow> 
+        2*a + 1 \<le> 2*b + c"
+  by arith
+
+
+lemma "\<forall> (k::nat) \<ge> 8. \<exists>i j. k = 3*i + 5*j"
+  by arith
+
+
+thm algebra_simps
+lemma "(i+j)*(i-j) \<le> i*i + j*(j::int)"
+  by (simp add: algebra_simps)
+
+lemma "(5::int) ^ 2 = 20 + 5"
+  by simp
+
+lemma "(\<exists>a b (c::nat). (a^2 + b^2 = c^2))"
+nintpick
+
 end
