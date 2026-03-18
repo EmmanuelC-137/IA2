@@ -20,7 +20,7 @@ entonces A es subconjunto de T\<close>
 
 lemma AT:
 "\<lbrakk>\<forall>x y. T x y \<or> T y x;
-\<forall>x y. A x y \<and> A y x \<longrightarrow> x = y;
-\<forall>x y. T x y \<longrightarrow> A x y \<rbrakk> \<Longrightarrow> \<forall>x y. A x y \<longrightarrow> T x y"
-  by blast
+\<lbrakk>\<forall>x y. A x y \<and> A y x \<longrightarrow> x = y;
+\<lbrakk>\<forall>x y. T x y \<longrightarrow> A x y \<rbrakk> \<Longrightarrow> \<forall>x y. A x y \<longrightarrow> T x y"
+  by auto
 end
