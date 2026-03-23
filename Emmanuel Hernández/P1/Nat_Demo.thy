@@ -14,6 +14,15 @@ fun suma:: "N\<Rightarrow>N\<Rightarrow>N" where
 "suma cero y = y" |
 "suma (suc x) y = suc (suma x y)"
 
+lemma "suma x y = suma y x"
+proof -
+  have L1: "\\<and>y x. suma y (suc x) = suc (suma y x)"
+  by (induct_tac y, auto)
+  lemma L2: "\\<and>y. suma y cero = y"
+  by (induct_tac y, auto)
+  show ?thesis
+by (induct_tac x, auto simp add: L1 L2)
+qed
 thm suma.simps
 thm suma.induct
 
