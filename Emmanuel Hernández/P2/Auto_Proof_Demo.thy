@@ -54,7 +54,20 @@ lemma "(i+j)*(i-j) \<le> i*i + j*(j::int)"
 lemma "(5::int) ^ 2 = 20 + 5"
   by simp
 
-lemma "(\<exists>a b (c::nat). (a^2 + b^2 = c^2))"
-nintpick
+thm exI
+(* conjI  Asume que P es verdadero y Q tambien es verdadero; por tanto P y Q son verdaderos *)
+thm conjI
+thm conjI[of "a=b" "False"]
 
+lemma "(\<exists>a b (c::nat). (a^2 + b^2 = c^2))"
+  apply (rule_tac x="3" in exI)
+  apply (rule_tac x="4" in exI)
+  apply (rule_tac x="5" in exI)
+  by auto
+
+(* Rule: Unifica la conclusion de la regla, con la conclusion de la meta por probar.
+Y se aplica de adelante hacia atras. *)
+
+  (* Una meta variaable no es mas que una variable que puede ser reprecenada con cualquier valor *)
+(* blast aplica las reglas automaticamente *)
 end
