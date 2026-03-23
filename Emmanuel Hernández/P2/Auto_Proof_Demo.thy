@@ -32,6 +32,8 @@ text \<open>Encuentra P e intenta sledgehammer\<close>
 
 lemma "a#xs = ys @[a] \<Longrightarrow> set xs = set ys"
   sledgehammer
+  by (metis append_butlast_last_id butlast.simps(2) butlast_snoc
+      last.simps last_snoc rotate1.simps(2) set_rotate1)
 
 
 text \<open>Aritmética\<close>
