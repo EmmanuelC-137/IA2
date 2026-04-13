@@ -68,6 +68,7 @@ lemma "(\<exists>a b (c::nat). (a^2 + b^2 = c^2))"
 (* Rule: Unifica la conclusion de la regla, con la conclusion de la meta por probar.
 Y se aplica de adelante hacia atras. *)
 
-  (* Una meta variaable no es mas que una variable que puede ser reprecenada con cualquier valor *)
+  (* Una meta variable no es mas que una variable que puede ser reprecenada con cualquier valor. 
+  Estas se reconocen facilmente porque su estructura es ?P o ?Q en la consola*)
 (* blast aplica las reglas automaticamente *)
 end

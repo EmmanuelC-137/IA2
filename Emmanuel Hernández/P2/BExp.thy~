@@ -63,4 +63,22 @@ value "bsimp (And (Less (N 1) (N 0)) (Bc True))"
 lemma bval[simp]: "bval (bsimp b) s = bval b s"
   by (induction b, auto)
 
+(*
+Datatype pbexp =
+
+VAR vname | NEG pbexp | AND pbexp pbexp | OR pbexp pbexp
+
+where variables range over values of type bool:
+
+fun pbval :: "pbexp \<Rightarrow> (vname \<Rightarrow> bool) \<Rightarrow> bool" where
+
+"pbval (VAR x ) s = s x" |
+
+"pbval (NEG b) s = (\<not> pbval b s)" |
+
+"pbval (AND b1 b2) s = (pbval b1 s \<and> pbval b2 s)" |
+
+"pbval (OR b1 b2) s = (pbval b1 s \<or> pbval b2 s)"
+*)
+
 end
