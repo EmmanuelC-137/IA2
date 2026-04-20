@@ -1,0 +1,34 @@
+theory Auto_Proof_Demo
+  imports Main
+begin
+
+section \<open>Lógica y conjuntos\<close> 
+
+(*Lema: cuantificador universal all, cuantificador existencial*)
+ (*Para toda x exixte una y tal que x es igual a y*)
+(*auto demuestra de forma automatica, ya que se demuestra con argumentos lógicos*)
+lemma "ALL x. EX y. x = y" 
+  by auto
+
+(*Razonamiento de cojuntos aplicando auto*)
+lemma "A \<subseteq> B \<inter> C \<Longrightarrow> A \<subseteq> B \<inter> C"
+  by auto
+
+(*A exxite una lista ys tal que xs es ys concatenado con ys, asume que la lstya us esta dento
+del conjunto A, bajo esas dos suopociciones hacen que exixta un n tal que la longitud de la
+lista us es igual a n+n*)
+lemma "\<lbrakk> \<forall>xs \<in> A. \<exists>ys. xs = ys @ ys; us \<in> A \<rbrakk> \<Longrightarrow>
+        \<exists>n. length us = n+n"
+  by fastforce
+
+text \<open>Pruebas simples in FOL y teoría de conjuntos son automáticas
+Ejemplo: Si T es total, A es antisimetrica y T es subconjunto de A, entonces
+A es subconjunto de T\<close>
+lemma AT: 
+  "\<lbrakk>\<forall>x y. T x y \<or> T y x;
+    \<forall>x y. A x y \<and> A y x \<longrightarrow> x = y;
+   \<forall>x y. T x y \<longrightarrow> A x y \<rbrakk>
+  \<Longrightarrow> \<forall>x y. A x y \<longrightarrow> T x y"
+  by blast
+
+
