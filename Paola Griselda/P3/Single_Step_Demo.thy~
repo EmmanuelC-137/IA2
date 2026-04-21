@@ -1,0 +1,12 @@
+theory Single_Step_Demo
+  imports Main
+begin
+(*teorema de la introducción de conjunción*)
+thm conjI[of "hola mundo" "a todos"]
+
+(*Lo que tienes en el lado izq en la ecu por ejemplo A=A*)
+thm refl
+
+(*aplicaión de conjI, la aplicacción hacia adelante*)
+thm conjI
+thm conjI[OF refl[of "a"]] (*el OF es como el moduspons*)
