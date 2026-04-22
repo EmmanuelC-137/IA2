@@ -37,5 +37,19 @@ lemma "ev n \<Longrightarrow> env n"
   by(induction n rule: ev.induct, simp_all)
 
 lemma "ev n \<Longrightarrow> \<exists>k. n = 2 * k"
+  apply (induction n rule: ev.induct)
+   apply simp_all
+  apply arith
+  done
+
+lemma "ev m \<Longrightarrow> ev (m-2)"
+  apply (induction m rule: ev.induct)
+   apply simp_all
+  apply (rule ev0)
+  done
+
+
+
+
 
 end
