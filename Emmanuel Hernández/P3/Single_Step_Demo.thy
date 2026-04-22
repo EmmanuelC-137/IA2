@@ -75,4 +75,33 @@ lemma "\<lbrakk>P \<longrightarrow> Q; Q \<longrightarrow> R\<rbrakk> \<Longrigh
   apply (erule mp)
   apply(assumption)
   done
+
+(*
+\<Longrightarrow> vs \<longrightarrow>
+
+El operador \<Longrightarrow> es caraceristico del framework de isabelle y sirve para
+definir las diferentes logicas, este no es parte de la logica de alto orden.
+
+Mientras que el \<longrightarrow> es parte de HOL y si es logica de alto orden.
+
+
+\<lbrakk>A1; ... ; An\<rbrakk> \<Longrightarrow> A: Significa que esta asumiendo A1, A2, A3, etc. y eso es igual a A
+A1 \<and> ... \<and> An \<longrightarrow> A: Significa que A1 y A2 y A3 Y etc. Es igual a A
+
+
+* 0 es un numero par.
+* Si n es par, entonces n+2 tambien es par.
+* Estos son los unicos numeros pares.
+
+
+Razonamiento inductivo parte de la idea de lo micro a lo macro.
+Mientras que en la recursion es lo contrario, de lo macro a lo micro.
+
+
+En una definicion recursiva debe de ser total, esto significa que si es pasado
+un numero, este debe dar solucion y saber lo que sucede.
+
+La inductiva por otra parte no es necesario saber lo que va a pasar.
+*)
+
 end
