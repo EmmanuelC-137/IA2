@@ -1,0 +1,17 @@
+theory exam2
+imports Main
+begin
+
+datatype tree0 = Leaf | Node0 tree0 tree0
+
+fun explode :: "nat \<Rightarrow> tree0 \<Rightarrow> tree0" where
+"explode 0 t = t" |
+"explode (Suc n) t = "
+
+
+fun itadd :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
+"itadd 0 n = n" |
+"itadd (Suc m) n = itadd m (Suc n)"
+
+
+end
