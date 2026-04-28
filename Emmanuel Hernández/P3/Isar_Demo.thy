@@ -64,4 +64,33 @@ lemma
     thus "False" by blast
   qed
 
+section \<open>Patrones de prueba\<close>
+lemma "P \<longleftrightarrow> Q"
+proof
+  assume "P"
+  show "Q" sorry
+next
+  assume "Q"
+  show "P" sorry
+qed
+
+lemma "A = (B :: 'a set)"
+proof
+  show "A \<subseteq> B" sorry
+next
+  show "B \<subseteq> A" sorry
+
+lemma "A \<subseteq> B"
+proof
+  fix a (*Fijamos el elemento "a"*)
+  assume "a \<in> A"
+  show "a \<in> B" sorry
+qed
+
+lemma "P"
+proof (rule ccontr)
+  assume "\<not> P"
+  show "False" sorry
+qed
+
 end
