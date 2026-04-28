@@ -4,14 +4,64 @@ begin
 
 thm surj_def
 
-lemma test:"\<not> surj(f::'a \<Rightarrow> 'a set)"
+lemma test:"\<not>surj(f::'a \<Rightarrow> 'a set)"
+proof
   assume 0: "surj f"
   from 0 have 1: "\<forall>A. \<exists>a. A = f a" 
     by (simp add: surj_def)
   from 1 have 2: "\<exists>a. {x. x \<in> f x} = f a" 
     by blast
-from 2 show "False" by blast
+  from 2 show "False"
+    by blast
+qed
 
-(*Esta mal el codigo, checar con la imagen*)
+lemma "\<not> surj (f:: 'a \<Rightarrow> 'a set)"
+proof
+  assume 0: "surj f"
+  from 0 have 1: "\<exists>a. {x. x \<notin> f x} = f a"
+    by (auto simp: surj_def)
+  from 1 show "False" by blast
+qed
+
+text \<open>No es necesario el uso de etiquetas\<close>
+lemma "\<not>surj (f:: 'a \<Rightarrow> 'a set)"
+proof
+  assume "surj f"
+  from this have "\<exists>a. {x. x \<notin> f x} = f a"
+    by (auto simp: surj_def)
+  from this show "False" by blast
+qed
+
+
+text \<open>"then" = "from this"\<close>
+lemma "\<not>surj (f:: 'a \<Rightarrow> 'a set)"
+proof
+  assume "surj f"
+  then have "\<exists>a. {x. x \<notin> f x} = f a"
+    by (auto simp: surj_def)
+  then show "False" by blast
+qed
+
+text \<open>"hance" = "then have", "thus" = "then show"\<close>
+lemma "\<not>surj (f:: 'a \<Rightarrow> 'a set)"
+proof
+  assume "surj f"
+  hence "\<exists>a. {x. x \<notin> f x} = f a"
+    by (auto simp: surj_def)
+  thus "False" by blast
+qed
+
+text\<open>Enunciados estructurados: "fixes", "assumes", "shows"\<close>
+
+lemma
+  fixes f :: "'a \<Rightarrow> 'a set"
+  assumes s: "surj f"
+  shows "False"
+
+  proof -
+    have "\<exists> a. {x. x \<notin> f x} = f a" using s
+      by (auto simp: surj_def)
+    thus "False" by blast
+  qed
 
 end
