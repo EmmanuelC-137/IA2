@@ -79,8 +79,6 @@ proof
   show "A \<subseteq> B" sorry
 next
   show "B \<subseteq> A" sorry
-qed
-
 
 lemma "A \<subseteq> B"
 proof
@@ -89,65 +87,10 @@ proof
   show "a \<in> B" sorry
 qed
 
-text\<open>Contradiccion\<close>
-
-thm ccontr (*Regla para demostrar por contradicción*)
-
 lemma "P"
 proof (rule ccontr)
   assume "\<not> P"
   show "False" sorry
 qed
-
-text\<open>Distinción de casos\<close>
-
-thm disjE (*Regla de eliminacion: Elimina la disyuncion*)
-
-lemma "R"
-proof cases (*Regla para demostrar por casos*)
-  assume "P"
-  show "R" sorry
-next
-  assume "\<not>P"
-  show "R" sorry
-qed
-
-lemma "R"
-proof -
-  have "P \<or> Q" sorry
-  then show "R"
-  proof
-    assume "P"
-    show "R" sorry
-  next
-    assume "Q"
-    show "R" sorry
-  qed
-qed
-
-thm exI (*Regla de introduccion de un existencial 
-?P ?x \<Longrightarrow> \<exists>x. ?P x: Si P se cumple para x, entonces existe una x para  cada P*)
-
-lemma "\<not> surj (f :: 'a \<Rightarrow> 'a set)"
-proof
-  assume "surj f"
-  hence "\<exists>a. {x. x \<notin> f x} = f a" 
-    by (auto simp: surj_def)
-      (*Para quitar un cuantificador existencial, se usa el obtain*)
-  then obtain a where " {x. x \<notin> f x} = f a" by blast
-  hence "a \<notin> f a \<longleftrightarrow> a \<in> f a"
-    by blast
-  thus "False" by blast
-qed
-
-lemma assumes "\<exists>x. \<forall>y. P x y" shows "\<forall>yy. \<exists>x. P x y"
-proof -
-  have "\<exists>x. \<forall>y. P x y"
-
-
-
-
-qed
-
 
 end
