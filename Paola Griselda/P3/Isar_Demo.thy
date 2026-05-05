@@ -159,11 +159,45 @@ lemma
     hence "P x y" (*P x y es verdadero para cualquier y, entonces lógicamente también tiene que ser verdadero para nuestro y arbitrario que fijamos*)
       by blast
     thus "\<exists>x. P x y" (*P x y se cumple para este x y este y en particular, podemos concluir que existe algún elemento (nuestro x) que hace que P sea verdadero para y*)
-       by blast
+      by blast
+
+
+text \<open>Cadenas de ecuaciones y desigualdades\<close>
+
+lemma "(0::real) \<le> x^2 + y^2 - 2*x*y"
+proof -
+  have "0 \<le> (x-y)^2" by simp
+  also have "... = x^2+y^2-2*x*y" (*se usa (...) para la ultima fórmula*)
+    by (simp add: numeral_eq_Suc algebra_simps)
+  finally show "0 \<le> x^2 + y^2 - 2*x*y" .
 qed
 
+section \<open>Unificación de patrones y meta variables\<close>
+
+lemma "\<exists>xs. length xs = 0" (is "\<exists>xs. ?P xs" (*probar la lista *)
+proof 
+  show "?P([])" by simp
+qed
+
+lemma "\<exists>x y::int. x < z & z < y" (is "\<exists>x y. ?P x y")
+proof -
+  have "?P (z-1) (z+1)" by arith
+  thus ?thesis by blast
+
+(*ejemplo de una suposición de que x < 0*)
+(*si la suposición, la formula es grande se le coloca nombre*)
+(*lemma assumes a_menor_cero:"x < (0::int)" shows "x*x>0*)
+lemma assumes "x < (0::int)" shows "x*x>0"
+proof - 
+  from `x<0` show ?thesis by (metis mult_neg_neg)
+qed
+
+lemma "\<exists>ys zs. xs = ys@zs" \<and> 
+(length ys = length zs \<or> length ys = length zs + 1)"
+sorry
 
 
+(*Leer el libro C5 *)
 
 
 end
