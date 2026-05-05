@@ -152,10 +152,15 @@ qed
 lemma
   assumes "\<exists>x. \<forall>y. P x y"
     shows "\<forall>y. \<exists>x. P x y"
-      proof
-        fix y
-        
-
+  proof (*Al no especificar ninguna regla, Isabelle aplica automáticamente la regla estándar*)
+    fix y (*Fijamos un elemento arbitrario y*)
+    from assms obtain x where "\<forall>y. P x y" (*Utilizamos nuestra suposición inicial (assms) que afirma que existe un x que cumple la propiedad para todos los elementos. La palabra clave obtain nos permite extraer ese elemento específico y llamarlo x*)
+      by blast
+    hence "P x y" (*P x y es verdadero para cualquier y, entonces lógicamente también tiene que ser verdadero para nuestro y arbitrario que fijamos*)
+      by blast
+    thus "\<exists>x. P x y" (*P x y se cumple para este x y este y en particular, podemos concluir que existe algún elemento (nuestro x) que hace que P sea verdadero para y*)
+       by blast
+qed
 
 
 
