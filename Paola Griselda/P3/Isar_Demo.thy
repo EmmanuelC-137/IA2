@@ -191,13 +191,33 @@ lemma assumes "x < (0::int)" shows "x*x>0"
 proof - 
   from `x<0` show ?thesis by (metis mult_neg_neg)
 qed
-
+(*
 lemma "\<exists>ys zs. xs = ys@zs" \<and> 
 (length ys = length zs \<or> length ys = length zs + 1)"
 sorry
+*)
+lemma "\<exists>ys zs. xs = ys @ zs \<and> (length ys = length zs \<or> length ys = length zs + 1)"
+proof -
+  \<comment> \<open>Definimos el punto medio de la lista. Sumamos 1 para redondear hacia arriba en listas impares\<close>
+  let ?mitad = "(length xs + 1) div 2"
+  
+  \<comment> \<open>ys toma la primera mitad, zs toma la segunda mitad (drop)\<close>
+  let ?ys = "take ?mitad xs"
+  let ?zs = "drop ?mitad xs"
 
+  \<comment> \<open>Demostramos que al unir las dos mitades obtenemos la lista original\<close>
+  have "xs = ?ys @ ?zs" 
+    by simp
+    
+  \<comment> \<open>Demostramos que las longitudes cumplen la condición (iguales o ys es 1 elemento mayor)\<close>
+  moreover have "length ?ys = length ?zs \<or> length ?ys = length ?zs + 1"
+    by auto
+    
+  \<comment> \<open>Unimos nuestros dos hechos (moreover/ultimately) para demostrar el teorema final\<close>
+  ultimately show ?thesis 
+    by blast
+qed
 
-(*Leer el libro C5 *)
 
 
 end
