@@ -196,29 +196,21 @@ lemma "\<exists>ys zs. xs = ys@zs" \<and>
 (length ys = length zs \<or> length ys = length zs + 1)"
 sorry
 *)
+
+
 lemma "\<exists>ys zs. xs = ys @ zs \<and> (length ys = length zs \<or> length ys = length zs + 1)"
 proof -
-  \<comment> \<open>Definimos el punto medio de la lista. Sumamos 1 para redondear hacia arriba en listas impares\<close>
-  let ?mitad = "(length xs + 1) div 2"
-  
-  \<comment> \<open>ys toma la primera mitad, zs toma la segunda mitad (drop)\<close>
-  let ?ys = "take ?mitad xs"
-  let ?zs = "drop ?mitad xs"
+  let ?m = "(length xs + 1) div 2"  (*Define una metavariable llamada ?m que representa el punto donde vamos a cortar la lista, El truco matemático: Al sumar 1 antes de dividir entre 2, se logra un "redondeo hacia arriba" para enteros, Si la longitud es 4 (par): (4 + 1) div 2 = 2.Si la longitud es 5 (impar): (5 + 1) div 2 = 3.*)
+  (*Construimos ys tomando los primeros ?m elementos de la lista original (take).
+  Construimos zs tomando el resto, es decir, eliminando los primeros ?m elementos (drop).*)
+  define ys where "ys = take ?m xs"
+  define zs where "zs = drop ?m xs"
 
-  \<comment> \<open>Demostramos que al unir las dos mitades obtenemos la lista original\<close>
-  have "xs = ?ys @ ?zs" 
-    by simp
-    
-  \<comment> \<open>Demostramos que las longitudes cumplen la condición (iguales o ys es 1 elemento mayor)\<close>
-  moreover have "length ?ys = length ?zs \<or> length ?ys = length ?zs + 1"
-    by auto
-    
-  \<comment> \<open>Unimos nuestros dos hechos (moreover/ultimately) para demostrar el teorema final\<close>
-  ultimately show ?thesis 
-    by blast
+  have "xs = ys @ zs" by (simp add: ys_def zs_def) (*concatenación*)
+  hence "xs = ys @ zs \<and> (length ys = length zs \<or> length ys = length zs + 1)" (*e pides que demuestre la condición completa del lema. Como ya demostraste la primera mitad en el paso anterior*)
+    by (auto simp add: ys_def zs_def)
+  thus ?thesis by blast
 qed
-
-
 
 end
 
