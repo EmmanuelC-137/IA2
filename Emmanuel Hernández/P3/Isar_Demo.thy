@@ -177,9 +177,37 @@ proof -
   from `x<0` show ?thesis by (metis mult_neg_neg)
 qed
 
+
+(*El lemma siguiente se resuelve por casos*)
 lemma "\<exists>ys zs. xs = ys@zs \<and>
   (length ys = length zs \<or> length ys = length zs + 1)"
-proof
+(*Lo que nos dice es que *)
+proof cases
+  assume "\<exists>n. length xs = n + n"
+    (*Se obtiene n y es una variable fija*)
+  then obtain n where "length xs = n+n" by blast
+    (*Contruimos la lista ys y usamos 
+      take toma los primero n elementos de la lista*)
+  let ?ys = "take n xs"
+    (*Lo mismo que arriba pero ahora con zs y usamos 
+      drop para tirar los primero elementes de la lista*)
+  let ?zs = "drop n xs"
+  have "xs = ?ys @ ?zs \<and> length ?ys = length ?zs"
+    using \<open>length xs = n + n\<close> by simp
+  show ?thesis 
+    by blast
+next
+  assume "\<not>(\<exists>n. length xs = n + n)"
+  then have "\<exists>n. length xs = Suc(n+n)" by arith
+  then obtain n where "length xs = Suc(n+n)" by blast
+    (*sledgehammer*)
+  let ?ys = "take (Suc n) xs"
+  let ?zs = "drop (Suc n) xs"
+  have "xs = ?ys @ ?zs \<and> length ?ys = length ?zs + 1"
+    (*sledgehammer*)
+  using \<open>length xs = Suc (n + n)\<close> by auto
+  show ?thesis
+    by blast
 
 qed
 
