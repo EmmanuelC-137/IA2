@@ -140,14 +140,77 @@ proof
   thus "False" by blast
 qed
 
-lemma assumes "\<exists>x. \<forall>y. P x y" shows "\<forall>yy. \<exists>x. P x y"
+lemma assumes h1: "\<exists>x. \<forall>y. P x y" shows "\<forall>yy. \<exists>x. P x y"
+proof
+  have "\<exists>a. P a y"
+    using h1 by blast
+  then show "\<exists>x. P x y"
+    by blast
+qed
+
+text \<open>Cadena de ecuaciones y desigualdades\<close>
+lemma "(0::real) \<le> x^2 + y^2 - 2*x*y"
 proof -
-  have "\<exists>x. \<forall>y. P x y"
+  have "0 \<le> (x-y)^2" by simp
+  also have "... = x^2 + y^2 - 2*x*y"
+    by (simp add: numeral_eq_Suc algebra_simps)
+  finally show "0 \<le> x^2 + y^2 - 2*x*y" .
+qed
 
 
+section \<open>Unificación de patrones y meta variables \<close>
+lemma "\<exists>xs. length xs = 0" (is "\<exists>xs. ?P xs")
+proof
+  show "?P([])" by simp
+qed
 
+
+lemma "\<exists>x y::int. x < z & z < y" (is "\<exists>x y. ?P x y")
+proof -
+  have "?P (z - 1) (z + 1)" by arith
+  thus ?thesis by blast
+qed
+
+
+lemma assumes "x < (0::int)" shows "x * x>0"
+proof -
+  from `x<0` show ?thesis by (metis mult_neg_neg)
+qed
+
+
+(*El lemma siguiente se resuelve por casos*)
+lemma "\<exists>ys zs. xs = ys@zs \<and>
+  (length ys = length zs \<or> length ys = length zs + 1)"
+(*Lo que nos dice es que *)
+proof cases
+  assume "\<exists>n. length xs = n + n"
+    (*Se obtiene n y es una variable fija*)
+  then obtain n where "length xs = n+n" by blast
+    (*Contruimos la lista ys y usamos 
+      take toma los primero n elementos de la lista*)
+  let ?ys = "take n xs"
+    (*Lo mismo que arriba pero ahora con zs y usamos 
+      drop para tirar los primero elementes de la lista*)
+  let ?zs = "drop n xs"
+  have "xs = ?ys @ ?zs \<and> length ?ys = length ?zs"
+    using \<open>length xs = n + n\<close> by simp
+  show ?thesis 
+    by blast
+next
+  assume "\<not>(\<exists>n. length xs = n + n)"
+  then have "\<exists>n. length xs = Suc(n+n)" by arith
+  then obtain n where "length xs = Suc(n+n)" by blast
+    (*sledgehammer*)
+  let ?ys = "take (Suc n) xs"
+  let ?zs = "drop (Suc n) xs"
+  have "xs = ?ys @ ?zs \<and> length ?ys = length ?zs + 1"
+    (*sledgehammer*)
+  using \<open>length xs = Suc (n + n)\<close> by auto
+  show ?thesis
+    by blast
 
 qed
+
 
 
 end
