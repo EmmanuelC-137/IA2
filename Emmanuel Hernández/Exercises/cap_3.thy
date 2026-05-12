@@ -10,6 +10,11 @@ type_synonym state = "vname \<Rightarrow> val"
 
 datatype aexp = N int | V vname | Plus aexp aexp
 
+fun aval :: "aexp \<Rightarrow> state \<Rightarrow> val" where
+"aval (N n) s = n" |
+"aval (V x) s = s x" |
+"aval (Plus a1 a2) s = aval a1 s + aval a2 s"
+
 fun asimp_const :: "aexp \<Rightarrow> aexp" where
 "asimp_const (N n) = N n" |
 "asimp_const (V x) = V x" |
@@ -41,6 +46,39 @@ sumupall constants, even if they are not next to each other. For example, Plus
 (N 1) (Plus (V x) (N 2))becomesPlus (V x) (N 3).Thisgoesbeyondasimp.
 Define a function full_asimp :: aexp \<Rightarrow> aexp that sums up all constants and
 prove its correctness: aval (full_asimp a) s = aval a s.\<close>
+
+fun sum_consts :: "aexp \<Rightarrow> int" where
+"sum_consts (N n) = n" |
+"sum_consts (V x) = 0" |
+"sum_consts (Plus a1 a2) = sum_consts a1 + sum_consts a2"
+
+fun sum_vars :: "aexp \<Rightarrow> aexp option" where
+"sum_vars (N n) = None" |
+"sum_vars (V x) = Some (V x)" |
+"sum_vars (Plus a1 a2) = 
+  (case (sum_vars a1, sum_vars a2) of
+    (None, None) \<Rightarrow> None
+  | (Some e1, None) \<Rightarrow> Some e1
+  | (None, Some e2) \<Rightarrow> Some e2
+  | (Some e1, Some e2) \<Rightarrow> Some (Plus e1 e2))"
+
+lemma aval_sum_vars: 
+  "aval a s = sum_consts a + (case sum_vars a of None \<Rightarrow> 0 | Some a' \<Rightarrow> aval a' s)"
+apply(induction a)
+apply (auto split: option.split)
+done
+
+fun full_asimp :: "aexp \<Rightarrow> aexp" where
+"full_asimp a = 
+  (case sum_vars a of
+    None \<Rightarrow> N (sum_consts a)
+  | Some a' \<Rightarrow> if sum_consts a = 0 then a' else Plus a' (N (sum_consts a)))"
+
+theorem aval_full_asimp: "aval (full_asimp a) s = aval a s"
+apply(cases "sum_vars a")
+apply(insert aval_sum_vars[of a s])
+apply auto
+done
 
 
 text \<open>Exercise 3.3. Substitution is the process of replacing a variable by an ex
