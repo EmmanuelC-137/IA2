@@ -2,6 +2,8 @@ theory Capitulo_2
   imports Main
 begin
 
+subsection \<open>EJERCICIOS CAPÍTULO 2\<close>
+
 text \<open> Ejercicio 2.1: Evaluar expresiones con el comando value\<close>
 
 value "1 + (2::nat)"
@@ -13,7 +15,7 @@ value "[a,b] @ [c,d]"
 text \<open>**********************************************************\<close>
 text \<open> Ejercicio 2.2: Función add, asociatividad, conmutatividad y double\<close>
 
-fun add :: "nat \<longrightarrow> nat \<longrightarrow> nat" where
+fun add :: "nat \<Rightarrow> nat \<Rightarrow> nat" where
 "add 0 n = n" |
 "add (Suc m) n = Suc (add m n)" 
 
@@ -38,7 +40,7 @@ lemma add_comm: "add m n = add n m"
   apply (auto)
   done
 
-fun double :: "nat \<longrightarrow> nat" where
+fun double :: "nat \<Rightarrow> nat" where
 "double 0 = 0" |
 "double (Suc m) = Suc (Suc (double m))" 
 
@@ -51,7 +53,7 @@ text \<open>*****************************************************************\<c
 text \<open>Ejercicio 2.3: Contar ocurrencias de un elemento\<close>
 
 
-fun count :: "'a list \<longrightarrow> 'a \<longrightarrow> nat" where
+fun count :: "'a list \<Rightarrow> 'a \<longrightarrow> nat" where
 "count [] y = 0" |
 "count (x#xs) y = (if x = y then Suc (count xs y) else count xs y)"
 
@@ -100,11 +102,11 @@ text \<open> Ejercicio 2.6: Árboles y recolección de elementos\<close>
 
 datatype 'a tree = Tip | Node "'a tree" 'a "'a tree" 
 
-fun contents :: "'a tree \<longrightarrow> 'a list" where
+fun contents :: "'a tree \<Rightarrow> 'a list" where
 "contents Tip = []" |
 "contents (Node l a r) = contents l @ [a] @ contents r" 
 
-fun sum_tree :: "nat tree \<longrightarrow> nat" where
+fun sum_tree :: "nat tree \<Rightarrow> nat" where
 "sum_tree Tip = 0" |
 "sum_tree (Node l a r) = sum_tree l + a + sum_tree r" 
 
@@ -136,15 +138,15 @@ lemma pre_order_mirror: "pre_order (mirror2 t) = rev (post_order t)"
   done
 
 text \<open>*****************************************************************\<close>
-text \<open> Ejercicio 2.8: Función intersperse [cite: 120] \<close>
+text \<open> Ejercicio 2.8: Función intersperse \<close>
 
 
 fun intersperse :: "'a \<Rightarrow> 'a list \<Rightarrow> 'a list" where
 "intersperse a [] = []" |
 "intersperse a [x] = [x]" |
-"intersperse a (x#y#xs) = x # a # intersperse a (y#xs)" [cite: 120, 121]
+"intersperse a (x#y#xs) = x # a # intersperse a (y#xs)" 
 
-lemma intersperse_map: "map f (intersperse a xs) = intersperse (f a) (map f xs)" [cite: 122]
+lemma intersperse_map: "map f (intersperse a xs) = intersperse (f a) (map f xs)" 
   apply (induction xs rule: intersperse.induct)
   apply (auto)
   done
