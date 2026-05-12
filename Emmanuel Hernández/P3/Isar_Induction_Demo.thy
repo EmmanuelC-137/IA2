@@ -41,6 +41,18 @@ next
   thus "?P(Suc n)" by simp
 qed
 
+text  ‹In more details: : ›
+
+lemma "∑{0..n::nat} = n*(n+1) div 2" (is "?P n")
+proof (induction n)
+  show "?P 0" by simp
+next
+  fix n assume IH: "?P n"
+  have "∑{0..Suc n} = ∑{0..n} + Suc n" by simp
+  also have "... = n*(n+1) div 2 + Suc n" using IH by simp
+  also have "... = (Suc n) * ((Suc n)+1) div 2" by simp
+  finally show "?P(Suc n)" .
+qed
 
 
 end
