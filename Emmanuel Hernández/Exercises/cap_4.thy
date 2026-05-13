@@ -225,7 +225,8 @@ datatype instr = LOADI val | LOAD vname | ADD
 fun exec1 :: "instr \<Rightarrow> state \<Rightarrow> val list \<Rightarrow> val list" where
 "exec1 (LOADI n) _ stk = n # stk" |
 "exec1 (LOAD x) s stk = s x # stk" |
-"exec1 ADD _ (j # i # stk) = (i + j) # stk"
+"exec1 ADD _ (j # i # stk) = (i + j) # stk" |
+"exec1 ADD _ stk = stk"
 
 fun exec :: "instr list \<Rightarrow> state \<Rightarrow> val list \<Rightarrow> val list" where
 "exec [] _ stk = stk" |
