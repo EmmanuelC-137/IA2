@@ -35,8 +35,8 @@ fun optimal :: "aexp \<Rightarrow> bool" where
 "optimal (Plus e1 e2) = (optimal e1 \<and> optimal e2)"
 
 theorem optimal_asimp_const: "optimal (asimp_const a)"
-apply(induction a)
-apply(auto split: aexp.split)
+  apply(induction a)
+  apply(auto split: aexp.split)
 done
 
 
@@ -55,29 +55,24 @@ fun sum_consts :: "aexp \<Rightarrow> int" where
 fun sum_vars :: "aexp \<Rightarrow> aexp option" where
 "sum_vars (N n) = None" |
 "sum_vars (V x) = Some (V x)" |
-"sum_vars (Plus a1 a2) = 
-  (case (sum_vars a1, sum_vars a2) of
-    (None, None) \<Rightarrow> None
-  | (Some e1, None) \<Rightarrow> Some e1
-  | (None, Some e2) \<Rightarrow> Some e2
-  | (Some e1, Some e2) \<Rightarrow> Some (Plus e1 e2))"
+"sum_vars (Plus a1 a2) = (case (sum_vars a1, sum_vars a2) of (None, None) \<Rightarrow> None |
+          (Some e1, None) \<Rightarrow> Some e1 | (None, Some e2) \<Rightarrow> Some e2 |
+          (Some e1, Some e2) \<Rightarrow> Some (Plus e1 e2))"
 
 lemma aval_sum_vars: 
   "aval a s = sum_consts a + (case sum_vars a of None \<Rightarrow> 0 | Some a' \<Rightarrow> aval a' s)"
-apply(induction a)
-apply (auto split: option.split)
+  apply(induction a)
+  apply (auto split: option.split)
 done
 
 fun full_asimp :: "aexp \<Rightarrow> aexp" where
-"full_asimp a = 
-  (case sum_vars a of
-    None \<Rightarrow> N (sum_consts a)
-  | Some a' \<Rightarrow> if sum_consts a = 0 then a' else Plus a' (N (sum_consts a)))"
+"full_asimp a = (case sum_vars a of None \<Rightarrow> N (sum_consts a) |
+            Some a' \<Rightarrow> if sum_consts a = 0 then a' else Plus a' (N (sum_consts a)))"
 
 theorem aval_full_asimp: "aval (full_asimp a) s = aval a s"
-apply(cases "sum_vars a")
-apply(insert aval_sum_vars[of a s])
-apply auto
+  apply(cases "sum_vars a")
+  apply(insert aval_sum_vars[of a s])
+  apply auto
 done
 
 
@@ -100,14 +95,13 @@ fun subst :: "vname \<Rightarrow> aexp \<Rightarrow> aexp \<Rightarrow> aexp" wh
 "subst x a (Plus a1 a2) = Plus (subst x a a1) (subst x a a2)"
 
 lemma subst_lemma: "aval (subst x a e) s = aval e (s(x := aval a s))"
-apply(induction e)
-apply auto
+  apply(induction e)
+  apply auto
 done
 
 lemma "aval a1 s = aval a2 s \<Longrightarrow> aval (subst x a1 e) s = aval (subst x a2 e) s"
-apply(simp add: subst_lemma)
+  apply(simp add: subst_lemma)
 done
-
 
 
 text \<open>Exercise 3.4. Take a copy of theory AExp and modify it as follows. Extend
@@ -143,18 +137,18 @@ fun asimp_t :: "aexp_t \<Rightarrow> aexp_t" where
 "asimp_t (Times_t a1 a2) = times_t (asimp_t a1) (asimp_t a2)"
 
 lemma aval_plus_t: "aval_t (plus_t a1 a2) s = aval_t a1 s + aval_t a2 s"
-apply(induction a1 a2 rule: plus_t.induct)
-apply auto
+  apply(induction a1 a2 rule: plus_t.induct)
+  apply auto
 done
 
 lemma aval_times_t: "aval_t (times_t a1 a2) s = aval_t a1 s * aval_t a2 s"
-apply(induction a1 a2 rule: times_t.induct)
-apply auto
+  apply(induction a1 a2 rule: times_t.induct)
+  apply auto
 done
 
 lemma aval_asimp_t: "aval_t (asimp_t a) s = aval_t a s"
-apply(induction a)
-apply (simp_all add: aval_plus_t aval_times_t)
+  apply(induction a)
+  apply (simp_all add: aval_plus_t aval_times_t)
 done
 
 
@@ -173,22 +167,13 @@ datatype aexp2 = N2 int | V2 vname | Plus2 aexp2 aexp2 | PostInc vname | Div aex
 fun aval2 :: "aexp2 \<Rightarrow> state \<Rightarrow> (val \<times> state) option" where
 "aval2 (N2 n) s = Some (n, s)" |
 "aval2 (V2 x) s = Some (s x, s)" |
-"aval2 (Plus2 a1 a2) s = 
-  (case aval2 a1 s of
-    None \<Rightarrow> None
-  | Some (v1, s') \<Rightarrow> 
-      (case aval2 a2 s' of
-        None \<Rightarrow> None
-      | Some (v2, s'') \<Rightarrow> Some (v1 + v2, s'')))" |
+"aval2 (Plus2 a1 a2) s = (case aval2 a1 s of None \<Rightarrow> None | 
+        Some (v1, s') \<Rightarrow> (case aval2 a2 s' of None \<Rightarrow> None | 
+        Some (v2, s'') \<Rightarrow> Some (v1 + v2, s'')))" |
 "aval2 (PostInc x) s = Some (s x, s(x := s x + 1))" |
-"aval2 (Div a1 a2) s =
-  (case aval2 a1 s of
-    None \<Rightarrow> None
-  | Some (v1, s') \<Rightarrow>
-      (case aval2 a2 s' of
-        None \<Rightarrow> None
-      | Some (v2, s'') \<Rightarrow> if v2 = 0 then None else Some (v1 div v2, s'')))"
-
+"aval2 (Div a1 a2) s = (case aval2 a1 s of None \<Rightarrow> None | 
+        Some (v1, s') \<Rightarrow> (case aval2 a2 s' of None \<Rightarrow> None |
+        Some (v2, s'') \<Rightarrow> if v2 = 0 then None else Some (v1 div v2, s'')))"
 
 
 text \<open>Exercise 3.6. The following type adds a LET construct to arithmetic ex
@@ -218,10 +203,9 @@ fun inline :: "lexp \<Rightarrow> aexp" where
 "inline (LET x e1 e2) = subst x (inline e1) (inline e2)"
 
 lemma inline_correct: "aval (inline e) s = lval e s"
-apply(induction e arbitrary: s)
-apply (auto simp add: subst_lemma)
+  apply(induction e arbitrary: s)
+  apply (auto simp add: subst_lemma)
 done
-
 
 
 text \<open>Exercise 3.7. Define functions Eq, Le :: aexp \<Rightarrow> aexp \<Rightarrow> bexp and prove
@@ -243,11 +227,11 @@ fun Le :: "aexp \<Rightarrow> aexp \<Rightarrow> bexp" where
 "Le a1 a2 = Not (Less a2 a1)"
 
 lemma bval_Eq: "bval (Eq a1 a2) s = (aval a1 s = aval a2 s)"
-apply auto
+  apply auto
 done
 
 lemma bval_Le: "bval (Le a1 a2) s = (aval a1 s \<le> aval a2 s)"
-apply auto
+  apply auto
 done
 
 
@@ -274,19 +258,18 @@ fun b2ifexp :: "bexp \<Rightarrow> ifexp" where
 
 fun if2bexp :: "ifexp \<Rightarrow> bexp" where
 "if2bexp (Bc2 v) = Bc v" |
-"if2bexp (If b1 b2 b3) = 
-  Not (And (Not (And (if2bexp b1) (if2bexp b2))) 
-           (Not (And (Not (if2bexp b1)) (if2bexp b3))))" |
+"if2bexp (If b1 b2 b3) = Not (And (Not (And (if2bexp b1) (if2bexp b2))) 
+                        (Not (And (Not (if2bexp b1)) (if2bexp b3))))" |
 "if2bexp (Less2 a1 a2) = Less a1 a2"
 
 lemma bval_if2bexp: "bval (if2bexp b) s = ifval b s"
-apply(induction b)
-apply auto
+  apply(induction b)
+  apply auto
 done
 
 lemma ifval_b2ifexp: "ifval (b2ifexp b) s = bval b s"
-apply(induction b)
-apply auto
+  apply(induction b)
+  apply auto
 done
 
 
@@ -329,8 +312,7 @@ fun is_nnf :: "pbexp \<Rightarrow> bool" where
 "is_nnf (AND b1 b2) = (is_nnf b1 \<and> is_nnf b2)" |
 "is_nnf (OR b1 b2) = (is_nnf b1 \<and> is_nnf b2)"
 
-fun push_neg :: "pbexp \<Rightarrow> pbexp"
-and nnf :: "pbexp \<Rightarrow> pbexp" where
+fun push_neg :: "pbexp \<Rightarrow> pbexp" and nnf :: "pbexp \<Rightarrow> pbexp" where
 "push_neg (VAR x) = NEG (VAR x)" |
 "push_neg (NEG b) = nnf b" |
 "push_neg (AND b1 b2) = OR (push_neg b1) (push_neg b2)" |
@@ -340,18 +322,14 @@ and nnf :: "pbexp \<Rightarrow> pbexp" where
 "nnf (AND b1 b2) = AND (nnf b1) (nnf b2)" |
 "nnf (OR b1 b2) = OR (nnf b1) (nnf b2)"
 
-lemma pbval_push_neg_nnf:
-  "pbval (push_neg b) s = (\<not> pbval b s)"
-  "pbval (nnf b) s = pbval b s"
-apply(induction b and b rule: push_neg_nnf.induct)
-apply auto
+lemma pbval_push_neg_nnf: "pbval (push_neg b) s = (\<not> pbval b s)" "pbval (nnf b) s = pbval b s"
+   apply(induction b and b rule: push_neg_nnf.induct)
+   apply auto
 done
 
-lemma is_nnf_push_neg_nnf:
-  "is_nnf (push_neg b)"
-  "is_nnf (nnf b)"
-apply(induction b and b rule: push_neg_nnf.induct)
-apply auto
+lemma is_nnf_push_neg_nnf: "is_nnf (push_neg b)" "is_nnf (nnf b)"
+   apply(induction b and b rule: push_neg_nnf.induct)
+   apply auto
 done
 
 fun no_or :: "pbexp \<Rightarrow> bool" where
@@ -374,20 +352,28 @@ fun dist_AND :: "pbexp \<Rightarrow> pbexp \<Rightarrow> pbexp" where
 "dist_AND b1 b2 = AND b1 b2"
 
 lemma pbval_dist_AND: "pbval (dist_AND b1 b2) s = pbval (AND b1 b2) s"
-apply(induction b1 b2 rule: dist_AND.induct)
-apply auto
+  apply(induction b1 b2 rule: dist_AND.induct)
+  apply auto
 done
 
 lemma no_or_dist_AND: "no_or b1 \<Longrightarrow> no_or b2 \<Longrightarrow> no_or (dist_AND b1 b2)"
-apply(induction b1 b2 rule: dist_AND.induct)
-apply auto
+  apply(induction b1 b2 rule: dist_AND.induct)
+  apply auto
+done
+
+lemma is_dnf_NEG_no_or[simp]: "is_dnf (NEG b) \<Longrightarrow> no_or (NEG b)"
+  apply(cases b)
+  apply auto
+done
+
+lemma is_dnf_not_OR_no_or[simp]: "is_dnf b \<Longrightarrow> (\<forall>x y. b \<noteq> OR x y) \<Longrightarrow> no_or b"
+  apply(cases b)
+  apply auto
 done
 
 lemma is_dnf_dist_AND: "is_dnf b1 \<Longrightarrow> is_dnf b2 \<Longrightarrow> is_dnf (dist_AND b1 b2)"
   apply(induction b1 b2 rule: dist_AND.induct)
   apply (simp_all add: no_or_dist_AND)
-  (*sledgehammer*)
-  apply (smt (verit) is_dnf.simps(3,4,5,7) no_or.elims(1) pbexp.distinct(9))
 done
 
 fun dnf_of_nnf :: "pbexp \<Rightarrow> pbexp" where
@@ -397,8 +383,13 @@ fun dnf_of_nnf :: "pbexp \<Rightarrow> pbexp" where
 "dnf_of_nnf (AND b1 b2) = dist_AND (dnf_of_nnf b1) (dnf_of_nnf b2)"
 
 lemma pbval_dnf_of_nnf: "pbval (dnf_of_nnf b) s = pbval b s"
-apply(induction b)
-apply (simp_all add: pbval_dist_AND)
+  apply(induction b)
+  apply (simp_all add: pbval_dist_AND)
+done
+
+lemma is_nnf_NEG_is_dnf[simp]: "is_nnf (NEG b) \<Longrightarrow> is_dnf (NEG b)"
+  apply(cases b)
+  apply auto
 done
 
 lemma is_nnf_dnf_of_nnf: "is_nnf b \<Longrightarrow> is_dnf (dnf_of_nnf b)"
@@ -434,15 +425,15 @@ fun comp :: "aexp \<Rightarrow> instr list" where
 "comp (V x) = [LOAD x]" |
 "comp (Plus e1 e2) = comp e1 @ comp e2 @ [ADD]"
 
-lemma exec_append[simp]:
-  "exec (is1 @ is2) s stk = (case exec is1 s stk of None \<Rightarrow> None | Some stk' \<Rightarrow> exec is2 s stk')"
-apply(induction is1 arbitrary: stk)
-apply (auto split: option.split)
+lemma exec_append[simp]: "exec (is1 @ is2) s stk = (case exec is1 s stk of None \<Rightarrow> None 
+                          | Some stk' \<Rightarrow> exec is2 s stk')"
+  apply(induction is1 arbitrary: stk)
+  apply (auto split: option.split)
 done
 
 lemma exec_comp: "exec (comp a) s stk = Some (aval a s # stk)"
-apply(induction a arbitrary: stk)
-apply auto
+  apply(induction a arbitrary: stk)
+  apply auto
 done
 
 
@@ -479,20 +470,19 @@ fun comp11 :: "aexp \<Rightarrow> reg \<Rightarrow> instr11 list" where
 "comp11 (V x) r = [LD11 x r]" |
 "comp11 (Plus e1 e2) r = comp11 e1 r @ comp11 e2 (r+1) @ [ADD11 r (r+1)]"
 
-lemma exec11_append[simp]:
-  "exec11 (is1 @ is2) s rs = exec11 is2 s (exec11 is1 s rs)"
-apply(induction is1 arbitrary: rs)
-apply auto
+lemma exec11_append[simp]: "exec11 (is1 @ is2) s rs = exec11 is2 s (exec11 is1 s rs)"
+  apply(induction is1 arbitrary: rs)
+  apply auto
 done
 
 lemma exec11_comp11_less[simp]: "r' < r \<Longrightarrow> exec11 (comp11 a r) s rs r' = rs r'"
-apply(induction a arbitrary: r rs)
-apply auto
+  apply(induction a arbitrary: r rs)
+  apply auto
 done
 
 lemma exec11_comp11_eq[simp]: "exec11 (comp11 a r) s rs r = aval a s"
-apply(induction a arbitrary: r rs)
-apply auto
+  apply(induction a arbitrary: r rs)
+  apply auto
 done
 
 
@@ -521,20 +511,19 @@ fun comp0 :: "aexp \<Rightarrow> reg \<Rightarrow> instr0 list" where
 "comp0 (V x) r = [LD0 x]" |
 "comp0 (Plus e1 e2) r = comp0 e1 r @ [MV0 r] @ comp0 e2 (r+1) @ [ADD0 r]"
 
-lemma exec0_append[simp]:
-  "exec0 (is1 @ is2) s rs = exec0 is2 s (exec0 is1 s rs)"
-apply(induction is1 arbitrary: rs)
-apply auto
+lemma exec0_append[simp]: "exec0 (is1 @ is2) s rs = exec0 is2 s (exec0 is1 s rs)"
+  apply(induction is1 arbitrary: rs)
+  apply auto
 done
 
 lemma exec0_comp0_less[simp]: "0 < r' \<Longrightarrow> r' < r \<Longrightarrow> exec0 (comp0 a r) s rs r' = rs r'"
-apply(induction a arbitrary: r rs)
-apply auto
+  apply(induction a arbitrary: r rs)
+  apply auto
 done
 
 lemma exec0_comp0_eq[simp]: "0 < r \<Longrightarrow> exec0 (comp0 a r) s rs 0 = aval a s"
-apply(induction a arbitrary: r rs)
-apply auto
+  apply(induction a arbitrary: r rs)
+  apply auto
 done
 
 end
