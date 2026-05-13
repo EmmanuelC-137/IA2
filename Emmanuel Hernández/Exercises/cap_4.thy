@@ -272,13 +272,14 @@ lemma ok_exec_length: "ok n is n' \<Longrightarrow> length stk = n \<Longrightar
 proof (induction arbitrary: stk rule: ok.induct)
   case (ok_Nil n) thus ?case by simp
 next
-  case (ok_LOADI n is n' v) thus ?case by simp
+  case (ok_LOADI n instrs n' v) thus ?case by auto
 next
-  case (ok_LOAD n is n' x) thus ?case by simp
+  case (ok_LOAD n instrs n' x) thus ?case by auto
 next
-  case (ok_ADD n is n')
+  case (ok_ADD n instrs n')
+  have "2 \<le> length stk" using ok_ADD by simp
   then obtain x y stk' where "stk = x # y # stk'" using stk_2 by blast
-  with ok_ADD show ?case by simp
+  with ok_ADD show ?case by auto
 qed
 
 lemma ok_comp: "ok n (comp e) (Suc n)"
@@ -298,7 +299,11 @@ next
   moreover have "ok (Suc n) (comp a2) (Suc (Suc n))" by (rule Plus.IH)
   ultimately have "ok n (comp a1 @ comp a2) (Suc (Suc n))" by (rule ok_append)
   moreover have "ok (Suc (Suc n)) [ADD] (Suc n)"
-    by (intro ok_ADD ok_Nil) auto
+  proof -
+    have "2 \<le> Suc (Suc n)" by simp
+    moreover have "ok (Suc (Suc n) - 1) [] (Suc n)" using ok_Nil[of "Suc n"] by simp
+    ultimately show ?thesis by (rule ok_ADD)
+  qed
   ultimately have "ok n ((comp a1 @ comp a2) @ [ADD]) (Suc n)"
     by (rule ok_append)
   thus ?case by simp
