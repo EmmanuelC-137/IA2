@@ -251,15 +251,20 @@ ok_ADD: "2 \<le> n \<Longrightarrow> ok (n - 1) is n' \<Longrightarrow> ok n (AD
 lemma ok_append[simp]: "ok n is1 n'' \<Longrightarrow> ok n'' is2 n' \<Longrightarrow> ok n (is1 @ is2) n'"
 by (induction rule: ok.induct) (auto intro: ok.intros)
 
-lemma stk_2: "2 \<le> length stk \<Longrightarrow> \<exists>x y stk'. stk = x # y # stk'"
+lemma stk_2:
+  assumes "2 \<le> length stk"
+  shows "\<exists>x y stk'. stk = x # y # stk'"
 proof (cases stk)
-  case Nil thus ?thesis using \<open>2 \<le> length stk\<close> by simp
+  case Nil
+  show ?thesis using Nil assms by simp
 next
   case (Cons x xs)
-  thus ?thesis proof (cases xs)
-    case Nil thus ?thesis using \<open>2 \<le> length stk\<close> Cons by simp
+  show ?thesis proof (cases xs)
+    case Nil
+    show ?thesis using Cons Nil assms by simp
   next
-    case (Cons y ys) thus ?thesis using Cons `stk = x # xs` by blast
+    case (Cons y ys)
+    show ?thesis using Cons `stk = x # xs` by blast
   qed
 qed
 
