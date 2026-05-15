@@ -4,8 +4,6 @@ begin
 
 subsection \<open>EJERCICIOS CAPÍTULO 3\<close>
 
-text \<open> Ejercicio 3.1: \<close>
-
 text \<open>********************************************************\<close>
 text \<open>Ejercicio 3.1: Comprobar que asimp_const es óptima\<close>
 
@@ -134,5 +132,50 @@ theorem aval_asimp[simp]:
   apply (induction a)
   apply (auto)
   done
+
+text \<open>*********************************************************************\<close>
+text \<open>Ejercicio 3.5: Post-incremento y División (Side-effects)\<close>
+
+(*1. Nuevo tipo de dato con Post-incremento (PcInc) y División (Div)*)
+datatype aexp2 = 
+    N int 
+  | V vname 
+  | Plus aexp2 aexp2 
+  | Div aexp2 aexp2 
+  | PcInc vname  (*Representa x++*)
+
+(*2. Función de evaluación con propagación de estado y manejo de errores*)
+fun aval2 :: "aexp2 \<Rightarrow> state \<Rightarrow> (val \<times> state) option" where
+"aval2 (N n) s = Some (n, s)" |
+"aval2 (V x) s = Some (s x, s)" |
+"aval2 (PcInc x) s = Some (s x, s(x := s x + 1))" | (*Post-incremento: devuelve el valor actual (s x), pero el estado devuelto se actualiza sumando 1*)
+(*Suma: evaluamos de izquierda a derecha pasando el estado modificado s*)
+"aval2 (Plus a b) s = 
+  (case aval2 a s of
+     None \<Rightarrow> None |
+     Some (v1, s') \<Rightarrow> 
+       (case aval2 b s' of
+          None \<Rightarrow> None |
+          Some (v2, s'') \<Rightarrow> Some (v1 + v2, s'')))" |
+(*División: Similar a la suma, pero agregamos una caso para evitar la división por 0*)
+"aval2 (Div a b) s = 
+  (case aval2 a s of
+     None \<Rightarrow> None |
+     Some (v1, s') \<Rightarrow> 
+       (case aval2 b s' of
+          None \<Rightarrow> None |
+          Some (v2, s'') \<Rightarrow> if v2 = 0 then None else Some (v1 div v2, s'')))"
+
+(*Pruebas rápidas para comprobar el funcionamiento*)
+
+(*Prueba 1: División entre 0, debe dar None*)
+value "aval2 (Div (N 10) (N 0)) <>"
+(*Prueba 2: El post incremento devuelve 0, pero actualiza el estado internamente*)
+value "aval2 (PcInc ''x'') <>"
+(*Prueba 3: Secuencia de operaciones. x++ suma con x++
+   El primer x++ devuelve 0 y cambia x a 1. 
+   El segundo x++ lee ese 1, y cambia x a 2. 
+   Total: 0 + 1 = 1, y el estado final de x es 2*)
+value "aval2 (Plus (PcInc ''x'') (PcInc ''x'')) <>"
 
 end
