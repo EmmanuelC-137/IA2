@@ -1,0 +1,24 @@
+theory Capitulo_3
+  imports Capitulo_3_AExp
+begin
+
+subsection \<open>EJERCICIOS CAPÍTULO 3\<close>
+
+text \<open> Ejercicio 3.1: \<close>
+
+text \<open>********************************************************\<close>
+text \<open>Ejercicio 3.1: Comprobar que asimp_const es óptima\<close>
+
+
+fun optimal :: "aexp \<Rightarrow> bool"  where
+"optimal (N n) = True" |
+"optimal (V x) = True" |
+"optimal (Plus (N i) (N j)) = False" |
+"optimal (Plus e1 e2) = (optimal e1 \<and> optimal e2)"
+
+lemma optimal_asimp_const: "optimal (asimp_const a)"
+  apply (induction a)
+  apply (auto split: aexp.split)
+  done
+
+end
