@@ -1,0 +1,13 @@
+subsection \<open>Structural induction for type @{typ nat}\<close>
+
+text \<open>Explicit:\<close>
+
+lemma "\<Sum>{0..n::nat} = n*(n+1) div 2" (is "?P n")
+proof (induction n)
+show "?P 0" by simp
+next
+fix n asume "?P n"
+thus "?P(Suc n)" by simp
+qed
+
+text \<open>In more detail:\<close>
