@@ -95,4 +95,49 @@ thm Cons
   qed
 qed
 
+subsection "Computation induction"
+
+fun div2 :: "nat \<Rightarrow> nat" where
+"div2 0 = 0" |
+"div2 (Suc 0) = 0"|
+"div2 (Suc(Suc n)) = div2 n + 1"
+
+lemma "2 * div2 n \<le> n"
+proof (induction n rule: div2.induct)
+  case 1
+  show ?case by simp
+next  
+  case 2
+  show ?case by simp
+next
+  case (3 n)
+  have "2 * div2 (Suc(Suc n)) = 2 * div2 n + 2" by simp
+  also have "... \<le> n + 2" using "3.IH" by simp
+  also have "... = Suc(Suc n)" by simp
+  finally show ?case .
+qed
+
+text \<open>Note that \<open>3.IH\<close> is not valid name, it needs double quotes: \<open>"3.IH"\<close>.\<close>
+
+fun sep :: "'a \<Rightarrow> 'a list \<Rightarrow> 'a list" where
+"sep a (x # y # zs) = x # a # sep a (y # zs)" |
+"sep a xs = xs"
+
+thm sep.simps
+
+lemma "map f (sep a xs) = sep (f a) (map f xs)"
+proof (induction a xs rule:  sep.induct)
+  print_cases
+  case (1 a x y zs)
+  thus ?case by simp
+next
+  case ("2_1" a)
+  show ?case by simp
+next
+  case ("2_2" a v)
+  show ?case by simp
+qed
+
+
+
 end
